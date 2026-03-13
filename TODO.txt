@@ -3,7 +3,7 @@
    - Excerpt should be checked for invalid/garbage/empty content and removed if necessary.
    - Description should be the top 300 characters without escape characters/spaces and multiple gaps .
 
-2. Embedding Function
+2. Embedding Function (Done)
    - Implement a function that generates embeddings from hugging face for the preprocessed text.
 
 3. Store the embeddings along with data for full text search in a elastic search. 
