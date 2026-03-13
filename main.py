@@ -1,6 +1,7 @@
 from data import documents
 from text_processor import process_text
 from embeddings import get_embedding
+from elastic_search import es_client, INDEX_NAME
 
 
 def main():
@@ -21,6 +22,9 @@ def main():
         }
 
         cleaned_entries.append(new_entry)
+    
+    es_client.ensure_index()
+    es_client.bulk_insert(INDEX_NAME, documents)
 
     return cleaned_entries
 
