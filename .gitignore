@@ -1,0 +1,49 @@
+# Python
+# Byte-code files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+
+# Distribution / Org files
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+.venv/
+env/
+.env/
+ENV/
+bin/
+lib/
+include/
+
+# Packaging
+.tox/
+.coverage
+.coverage.*
+.hypothesis/
+.pytest_cache/
+
+# Editors
+.vscode/ # VS Code
+.idea/   # PyCharm
+
+# Miscellaneous
+*.log
+local_settings.py
+db.sqlite3
