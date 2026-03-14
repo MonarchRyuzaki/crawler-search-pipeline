@@ -2,37 +2,10 @@ import os
 import time
 import requests
 from dotenv import load_dotenv
-from elasticsearch import Elasticsearch
+from elastic_search import es_client as es, INDEX_NAME
+from embeddings import get_embedding
 
 load_dotenv()
-
-INDEX_NAME = "crawl_documents"
-
-HF_URL = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2"
-HF_HEADERS = {
-    "Authorization": f"Bearer {os.environ.get('HF_TOKEN', '')}",
-    "Content-Type": "application/json",
-}
-
-
-# ── Embedding ─────────────────────────────────────────────────────────────────
-
-def get_embedding(text: str, retries: int = 3) -> list[float]:
-    for _ in range(retries):
-        resp = requests.post(HF_URL, headers=HF_HEADERS, json={"inputs": text})
-        if resp.status_code == 200:
-            return resp.json()
-        time.sleep(5)
-    raise Exception(f"Embedding failed after {retries} retries")
-
-
-# ── Elasticsearch client ──────────────────────────────────────────────────────
-
-def get_es_client() -> Elasticsearch:
-    return Elasticsearch(
-        hosts="http://localhost:9200",
-        api_key=os.environ.get("ELASTICSEARCH_API_KEY"),
-    )
 
 
 # ── Result parser ─────────────────────────────────────────────────────────────
@@ -65,7 +38,6 @@ def fulltext_search(
     size: int = 10,
 ) -> list[dict]:
     """BM25 full-text search across title, excerpt, and content."""
-    es = get_es_client()
 
     must = [
         {
@@ -98,7 +70,6 @@ def semantic_search(
     num_candidates: int = 100,
 ) -> list[dict]:
     """Pure vector / semantic search using cosine similarity."""
-    es = get_es_client()
     query_vector = get_embedding(query)
 
     body = {
@@ -124,7 +95,6 @@ def hybrid_search(
     rank_constant: int = 60,
 ) -> list[dict]:
     """Hybrid search: BM25 + vector via Reciprocal Rank Fusion (RRF)."""
-    es = get_es_client()
     query_vector = get_embedding(query)
 
     filters = _build_filters(language=language, site_name=site_name)
@@ -187,15 +157,15 @@ def _build_filters(
 if __name__ == "__main__":
     import json
 
-    query = "web"
+    query = "dog or cat what should i get as a pet"
 
-    print("\n── Full-text search ──────────────────────────────")
-    results = fulltext_search(query, language="en")
-    print(json.dumps(results, indent=2))
+    # print("\n── Full-text search ──────────────────────────────")
+    # results = fulltext_search(query, language="en")
+    # print(json.dumps(results, indent=2))
 
-    print("\n── Semantic search ───────────────────────────────")
-    results = semantic_search(query)
-    print(json.dumps(results, indent=2))
+    # print("\n── Semantic search ───────────────────────────────")
+    # results = semantic_search(query)
+    # print(json.dumps(results, indent=2))
 
     print("\n── Hybrid search ─────────────────────────────────")
     results = hybrid_search(query, language="en")

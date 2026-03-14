@@ -95,5 +95,9 @@ class ElasticsearchClient:
             raise ConnectionError("Could not connect to Elasticsearch.")
         self.create_index_if_not_exists(INDEX_NAME)
 
+    def search(self, **kwargs):
+        return self._client.search(**kwargs)
+
 
 es_client = ElasticsearchClient()
+es_client.ensure_index()

@@ -6,5 +6,5 @@
 2. Embedding Function (Done)
    - Implement a function that generates embeddings from hugging face for the preprocessed text.
 
-3. Store the embeddings along with data for full text search in a elastic search. 
+3. Store the embeddings along with data for full text search in a elastic search. (Done)
    - Decide where to put the mappings.
